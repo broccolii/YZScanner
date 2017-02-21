@@ -20,9 +20,9 @@ class DemoViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 //       QRCodeManager().startScan(self)
-        self.presentViewController(QRCodeViewController(completion: { (codeInfo) -> Void in
+        self.present(QRCodeViewController(completion: { (codeInfo) -> Void in
             print(codeInfo)
         }), animated: true, completion: nil)
     }

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A4506D561E5602B9009E7BEC /* YZScannerReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4506D551E5602B9009E7BEC /* YZScannerReader.swift */; };
+		A4506D581E5602CC009E7BEC /* YZScannerMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4506D571E5602CC009E7BEC /* YZScannerMaskView.swift */; };
+		A4506D5A1E5602D6009E7BEC /* YZScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4506D591E5602D6009E7BEC /* YZScannerViewController.swift */; };
 		A47A864D1BE62D2C009E1BD1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A864C1BE62D2C009E1BD1 /* AppDelegate.swift */; };
 		A47A86521BE62D2C009E1BD1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A47A86501BE62D2C009E1BD1 /* Main.storyboard */; };
 		A47A86541BE62D2C009E1BD1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A47A86531BE62D2C009E1BD1 /* Assets.xcassets */; };
@@ -16,6 +19,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A4506D551E5602B9009E7BEC /* YZScannerReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YZScannerReader.swift; sourceTree = "<group>"; };
+		A4506D571E5602CC009E7BEC /* YZScannerMaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YZScannerMaskView.swift; sourceTree = "<group>"; };
+		A4506D591E5602D6009E7BEC /* YZScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YZScannerViewController.swift; sourceTree = "<group>"; };
 		A47A86491BE62D2C009E1BD1 /* QRCode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QRCode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A47A864C1BE62D2C009E1BD1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A47A86511BE62D2C009E1BD1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -37,6 +43,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A4506D541E56029D009E7BEC /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				A4506D551E5602B9009E7BEC /* YZScannerReader.swift */,
+				A4506D571E5602CC009E7BEC /* YZScannerMaskView.swift */,
+				A4506D591E5602D6009E7BEC /* YZScannerViewController.swift */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
 		A47A86401BE62D2C009E1BD1 = {
 			isa = PBXGroup;
 			children = (
@@ -56,6 +72,7 @@
 		A47A864B1BE62D2C009E1BD1 /* QRCode */ = {
 			isa = PBXGroup;
 			children = (
+				A4506D541E56029D009E7BEC /* Resource */,
 				A47A86621BE62D6D009E1BD1 /* DemoViewController.swift */,
 				A47A86631BE62D6D009E1BD1 /* QRCodeViewController.swift */,
 				A47A864C1BE62D2C009E1BD1 /* AppDelegate.swift */,
@@ -99,6 +116,7 @@
 				TargetAttributes = {
 					A47A86481BE62D2C009E1BD1 = {
 						CreatedOnToolsVersion = 7.1;
+						LastSwiftMigration = 0820;
 					};
 				};
 			};
@@ -138,6 +156,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4506D561E5602B9009E7BEC /* YZScannerReader.swift in Sources */,
+				A4506D581E5602CC009E7BEC /* YZScannerMaskView.swift in Sources */,
+				A4506D5A1E5602D6009E7BEC /* YZScannerViewController.swift in Sources */,
 				A47A86641BE62D6D009E1BD1 /* DemoViewController.swift in Sources */,
 				A47A86651BE62D6D009E1BD1 /* QRCodeViewController.swift in Sources */,
 				A47A864D1BE62D2C009E1BD1 /* AppDelegate.swift in Sources */,
@@ -257,6 +278,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Broccoli.QRCode;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -268,6 +290,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Broccoli.QRCode;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -290,6 +313,7 @@
 				A47A865D1BE62D2C009E1BD1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

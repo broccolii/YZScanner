@@ -1,12 +1,15 @@
 //
 //  YZScannerPreviewView.m
-//  YZCashier
+//  YZScanner
 //
 //  Created by Broccoli on 2017/1/19.
-//  Copyright © 2017年 Cashier. All rights reserved.
+//  Copyright © 2017年 YZScanner. All rights reserved.
 //
 
 #import "YZScannerMaskView.h"
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
 @interface YZScannerBackgroundView : UIView
 
@@ -75,17 +78,18 @@
 @interface YZScannerWindowView : UIView
 
 - (instancetype)initWithScannerWindowFrame:(CGRect)scannerWindowFrame
-                           backgroundColor:(UIColor *)backgroundColor NS_DESIGNATED_INITIALIZER;
+                           borderLineColor:(UIColor *)borderLineColor NS_DESIGNATED_INITIALIZER;
 
 @property (assign, nonatomic) CGRect scannerWindowFrame;
 @property (strong, nonatomic) UIColor *borderLineColor;
+@property (nonatomic, strong) UIView *referenceLine;
 
 @end
 
 @implementation YZScannerWindowView
 
 - (instancetype)initWithScannerWindowFrame:(CGRect)scannerWindowFrame
-                               borderLineColor:(UIColor *)borderLineColor {
+                           borderLineColor:(UIColor *)borderLineColor {
     self = [super initWithFrame:scannerWindowFrame];
     if (!self) {
         return nil;
@@ -94,7 +98,71 @@
     
     self.borderLineColor = borderLineColor;
     self.scannerWindowFrame = scannerWindowFrame;
+    
+    self.clipsToBounds = YES;
+    [self addSubview:self.referenceLine];
+    
+    [self addNotification];
     return self;
+}
+
+- (void)dealloc {
+    [self removeNotification];
+}
+
+#pragma mark - Notification
+- (void)addNotification {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(p_applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(p_applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+}
+
+- (void)removeNotification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+}
+
+- (void)p_applicationWillEnterForeground:(NSNotification*)note {
+    _referenceLine.frame = CGRectMake(0, - self.frame.size.height, self.frame.size.width, self.frame.size.height);
+    [self startScanning];
+}
+
+- (void)p_applicationDidEnterBackground:(NSNotification*)note {
+    _referenceLine.frame = CGRectMake(0, - self.frame.size.height, self.frame.size.width, self.frame.size.height);
+    [self stopScanning];
+}
+
+- (UIView *)referenceLine {
+    if (!_referenceLine) {
+        _referenceLine = [[UIView alloc] initWithFrame:self.scannerWindowFrame];
+        
+        CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+        gradientLayer.frame = CGRectMake(0, 0, self.scannerWindowFrame.size.width, self.scannerWindowFrame.size.height);
+        gradientLayer.colors = @[(id)[UIColor clearColor].CGColor,
+                                 (id)[UIColor colorWithRed:0.443 green:0.722 blue:0.569 alpha:1.000].CGColor];
+        gradientLayer.locations = @[@(0.5f)];
+        gradientLayer.startPoint = CGPointMake(0, 0);
+        gradientLayer.endPoint = CGPointMake(0, 1);
+        [_referenceLine.layer addSublayer:gradientLayer];
+        
+        _referenceLine.frame = CGRectMake(0, - _referenceLine.frame.size.height, self.frame.size.width, self.frame.size.height);
+    }
+    return _referenceLine;
+}
+
+- (void)startScanning {
+    [UIView animateWithDuration:2.5
+                          delay:0
+                        options:UIViewAnimationOptionRepeat
+                     animations:^{
+                         self.referenceLine.hidden = NO;
+                         _referenceLine.frame = CGRectMake(0, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
+    } completion:nil];
+}
+
+- (void)stopScanning {
+    [self.referenceLine.layer removeAllAnimations];
+    self.referenceLine.hidden = YES;
+    _referenceLine.frame = CGRectMake(0, - self.frame.size.height, self.frame.size.width, self.frame.size.height);
 }
 
 static NSInteger kLineWidth = 6;
@@ -201,8 +269,8 @@ static NSInteger kOriginOffset = 0.7;
 @interface YZScannerMaskView ()
 
 @property (nonatomic, assign) CGRect scannerWindowFrame;
-@property (nonatomic, strong) UIView *referenceLine;
-
+@property (nonatomic, strong) YZScannerBackgroundView *backgroundView;
+@property (nonatomic, strong) YZScannerWindowView *windowView;
 @end
 
 @implementation YZScannerMaskView
@@ -220,20 +288,29 @@ static NSInteger kOriginOffset = 0.7;
 
 #pragma mark - setup subviews
 - (void)setupSubviews {
-    YZScannerBackgroundView *backgroundView = [[YZScannerBackgroundView alloc] initWithFrame:self.frame
-                                                                          scannerWindowFrame:self.scannerWindowFrame
-                                                                                   fillColor:[[UIColor blackColor] colorWithAlphaComponent:0.6]];
-    [self addSubview:backgroundView];
-    
-    YZScannerWindowView *windowView = [[YZScannerWindowView alloc] initWithScannerWindowFrame:self.scannerWindowFrame
-                                                                                  borderLineColor:[YZColorManager colorWithRGBValue:0xF49922]];
-    [self addSubview:windowView];
-    
-    [self addSubview:self.referenceLine];
+    [self addSubview:self.backgroundView];
+    [self addSubview:self.windowView];
     [self startScanning];
 }
 
 #pragma mark - getter
+- (YZScannerBackgroundView *)backgroundView {
+    if (!_backgroundView) {
+        _backgroundView = [[YZScannerBackgroundView alloc] initWithFrame:self.frame
+                                                      scannerWindowFrame:self.scannerWindowFrame
+                                                               fillColor:[[UIColor blackColor] colorWithAlphaComponent:0.6]];
+    }
+    return _backgroundView;
+}
+
+- (YZScannerWindowView *)windowView {
+    if (!_windowView) {
+        _windowView = [[YZScannerWindowView alloc] initWithScannerWindowFrame:self.scannerWindowFrame
+                                                              borderLineColor:[UIColor colorWithRed:0.443 green:0.722 blue:0.569 alpha:1.0]];
+    }
+    return _windowView;
+}
+
 - (CGRect)scannerWindowFrame {
     if (CGRectEqualToRect(_scannerWindowFrame, CGRectZero)) {
         CGFloat y = 175;
@@ -245,41 +322,44 @@ static NSInteger kOriginOffset = 0.7;
     return _scannerWindowFrame;
 }
 
-- (UIView *)referenceLine {
-    if (!_referenceLine) {
-        _referenceLine = [[UIView alloc] initWithFrame:self.scannerWindowFrame];
-        
-        CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-        gradientLayer.frame = CGRectMake(0, 0, self.scannerWindowFrame.size.width, self.scannerWindowFrame.size.height);
-        gradientLayer.colors = @[(id)[UIColor clearColor].CGColor,
-                                 (id)[[YZColorManager colorWithType:ThemeFillColor] colorWithAlphaComponent:0.4].CGColor];
-        gradientLayer.locations = @[@(0.5f)];
-        gradientLayer.startPoint = CGPointMake(0, 0);
-        gradientLayer.endPoint = CGPointMake(0, 1);
-        [_referenceLine.layer addSublayer:gradientLayer];
-        _referenceLine.top = 0;
-        _referenceLine.left = self.scannerWindowFrame.origin.x;
-        _referenceLine.width = self.scannerWindowFrame.size.width;
-        _referenceLine.height = self.scannerWindowFrame.size.height;
-    }
-    return _referenceLine;
-}
-
 #pragma mark - publick method
 - (void)startScanning {
-    [UIView animateWithDuration:2.5
-                          delay:0
-                        options:UIViewAnimationOptionRepeat
-                     animations:^{
-        self.referenceLine.hidden = NO;
-        self.referenceLine.top = self.scannerWindowFrame.origin.y;
-    } completion:nil];
+    [self.windowView startScanning];
 }
 
 - (void)stopScanning {
-    [self.referenceLine.layer removeAllAnimations];
-    self.referenceLine.hidden = YES;
-    self.referenceLine.top = self.scannerWindowFrame.size.height;
+    [self.windowView stopScanning];
+}
+
+const NSInteger kActivityBackgroundViewTag = 1001;
+const NSInteger kActivityViewTag = 1002;
+
+- (void)startLoadingAnimation {
+    self.windowView.hidden = YES;
+    self.backgroundView.hidden = YES;
+    
+    UIView *activityBackgroundView = [[UIView alloc] initWithFrame:self.frame];
+    activityBackgroundView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent: 0.6];
+    activityBackgroundView.tag = kActivityBackgroundViewTag;
+    [self addSubview:activityBackgroundView];
+    
+    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityView.center = self.center;
+    activityView.tag = kActivityViewTag;
+    [self addSubview:activityView];
+    [activityView startAnimating];
+}
+
+- (void)stopLoadingAnimation {
+    self.windowView.hidden = NO;
+    self.backgroundView.hidden = NO;
+    
+    UIView *activityBackgroundView = [self viewWithTag:kActivityBackgroundViewTag];
+    [activityBackgroundView removeFromSuperview];
+    UIView *activityView = [self viewWithTag:kActivityViewTag];
+    [activityView removeFromSuperview];
 }
 
 @end
+
+#pragma clang diagnostic pop

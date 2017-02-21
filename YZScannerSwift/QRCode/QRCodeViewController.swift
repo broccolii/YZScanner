@@ -242,11 +242,11 @@ class QRCodeView: UIView {
      - parameter ctx:  图层上下文
      - parameter rect: 扫描框大小
      */
-    func addCornerLine(ctx: CGContextRef, rect: CGRect) {
+    func addCornerLine(ctx: CGContext, rect: CGRect) {
         /// 设置 线宽
-        CGContextSetLineWidth(ctx, 2)
+        ctx.setLineWidth(2)
         /// 线的颜色 ( 浅绿色
-        CGContextSetRGBStrokeColor(ctx, 83 / 255.0, 239 / 255.0, 111 / 255.0, 1)
+        ctx.setStrokeColor(red: 83 / 255.0, green: 239 / 255.0, blue: 111 / 255.0, alpha: 1)
         
         /// 左上角
         let pointsTopLeftX = [CGPointMake(CGRectGetMinX(rect) + 15, CGRectGetMinY(rect) + 0.7), CGPointMake(CGRectGetMinX(rect), CGRectGetMinY(rect) + 0.7)]

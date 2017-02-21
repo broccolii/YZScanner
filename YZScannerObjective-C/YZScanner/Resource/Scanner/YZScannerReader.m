@@ -1,9 +1,9 @@
 //
 //  YZScannerReader.m
-//  YZScannerReader
+//  YZScanner
 //
 //  Created by Broccoli on 2017/1/19.
-//  Copyright © 2017年 broccoliii. All rights reserved.
+//  Copyright © 2017年 YZScanner. All rights reserved.
 //
 
 #import "YZScannerReader.h"
@@ -40,8 +40,6 @@
 
 #pragma mark - Initializing the AV Components
 - (void)setupAVComponents {
-    // device
-    // TODO: 可能会为 nil
     self.defaultDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
     // input
